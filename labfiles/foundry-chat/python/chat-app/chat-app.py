@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 
 # import namespaces
+from openai import OpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
 
 
@@ -16,7 +18,14 @@ def main():
         model_deployment = os.getenv("MODEL_DEPLOYMENT")
 
         # Initialize the OpenAI client
+        token_provider = get_bearer_token_provider(
+            DefaultAzureCredential(), "https://ai.azure.com/.default"
+        )
         
+        openai_client = OpenAI(
+            base_url = azure_openai_endpoint,
+            api_kei = token_provider
+        )
 
 
         # Loop until the user wants to quit
@@ -29,7 +38,20 @@ def main():
                 continue
 
             # Get a response
-            
+            completion = openai_client.chat.completions.create(
+                model=model_deployment,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a helpful AI assistant thats answers que ajuda as pessoas."
+                    },
+                    {
+                        "role": "user",
+                        "content": input_text
+                    }
+                ]
+            )
+            print(completion.choices[0].message.content)
 
     except Exception as ex:
         print(ex)
