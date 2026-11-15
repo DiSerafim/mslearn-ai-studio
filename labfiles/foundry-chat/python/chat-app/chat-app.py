@@ -19,12 +19,12 @@ def main():
 
         # Initialize the OpenAI client
         token_provider = get_bearer_token_provider(
-            DefaultAzureCredential(), "https://ai.azure.com/.default"
+            DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
         )
         
         openai_client = OpenAI(
             base_url = azure_openai_endpoint,
-            api_kei = token_provider
+            api_key = token_provider
         )
 
 
